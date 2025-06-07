@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -57,5 +58,11 @@ class UserController extends Controller
 
         return (new UserResource($user));  //automatically return UserResource with status code 200
         // return (new UserResource($user))->response()->setStatusCode(200);
+    }
+
+    public function get(Request $request): UserResource
+    {
+        $user = Auth::user();
+        return new UserResource($user);
     }
 }
