@@ -163,4 +163,64 @@ class UserTest extends TestCase
                 ]
             ]);
     }
+
+    public function testUpdateNameSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        $oldUser = User::query()->where('username', '=', 'test')->first();
+
+        $this->patch('/api/users/current', [
+            'name' => 'new name'
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'new name',
+                ]
+            ]);
+
+        $newUser = User::query()->where('username', '=', 'test')->first();
+        self::assertNotEquals($oldUser->name, $newUser->name);
+    }
+
+    public function testUpdatePasswordSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        $oldUser = User::query()->where('username', '=', 'test')->first();
+
+        $this->patch('/api/users/current', [
+            'password' => 'new password'
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'test',
+                ]
+            ]);
+
+        $newUser = User::query()->where('username', '=', 'test')->first();
+        self::assertNotEquals($oldUser->password, $newUser->password);
+    }
+
+    public function testUpdateFailed()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->patch('/api/users/current', [
+            'name' => 'new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-new name-'
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'name' => [
+                        'The name field must not be greater than 100 characters.'
+                    ]
+                ]
+            ]);
+    }
 }
