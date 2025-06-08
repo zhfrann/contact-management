@@ -132,4 +132,97 @@ class ContactTest extends TestCase
                 ]
             ]);
     }
+
+    public function testUpdateSuccess(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->put("api/contacts/$contact->id", [
+            'first_name' => 'new first name',
+            'last_name' => 'new last name',
+            'email' => 'newemail@gmail.com',
+            'phone' => '987654321',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'first_name' => 'new first name',
+                    'last_name' => 'new last name',
+                    'email' => 'newemail@gmail.com',
+                    'phone' => '987654321',
+                ]
+            ]);
+    }
+
+    public function testUpdateValidationError(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->put("api/contacts/$contact->id", [
+            'first_name' => '',
+            'last_name' => 'new last name',
+            'email' => 'newemail@gmail.com',
+            'phone' => '987654321',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'first_name' => [
+                        'The first name field is required.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdateUnauthorized(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->put("api/contacts/$contact->id", [
+            'first_name' => 'new first name',
+            'last_name' => 'new last name',
+            'email' => 'newemail@gmail.com',
+            'phone' => '987654321',
+        ], [
+            'Authorization' => 'wrong token'
+        ])->assertStatus(401)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Unauthorized'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdateOtherContact(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->put("api/contacts/" . ($contact->id), [
+            'first_name' => 'new first name',
+            'last_name' => 'new last name',
+            'email' => 'newemail@gmail.com',
+            'phone' => '987654321',
+        ], [
+            'Authorization' => 'test2'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Contact not found'
+                    ]
+                ]
+            ]);
+    }
 }
