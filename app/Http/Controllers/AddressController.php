@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\AddressCreateRequest;
+use App\Http\Resources\AddressResource;
+use App\Models\Address;
+use App\Models\Contact;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AddressController extends Controller
+{
+    public function create(int $idContact, AddressCreateRequest $requets): JsonResponse
+    {
+        $user = Auth::user();
+
+        $contact = Contact::query()->where('user_id', '=', $user->id)->where('id', '=', $idContact)->first();
+        if (!$contact) {
+            throw new HttpResponseException(
+                response()->json([
+                    'errors' => [
+                        'message' => [
+                            'Contact not found'
+                        ]
+                    ]
+                ], 404)
+            );
+        }
+
+        $data = $requets->validated();
+
+        /** @var \App\Models\Address $address */
+        // $address = new Address($data);
+        // $address->contact_id = $contact->id;
+        // $address->save();
+
+        // Or
+        $address = $contact->addresses()->create($data);
+
+        return (new AddressResource($address))->response()->setStatusCode(201);
+    }
+}
