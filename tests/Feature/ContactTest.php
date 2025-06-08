@@ -203,7 +203,7 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function testUpdateOtherContact(): void
+    public function testUpdateOtherUserContact(): void
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
@@ -216,6 +216,38 @@ class ContactTest extends TestCase
             'phone' => '987654321',
         ], [
             'Authorization' => 'test2'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Contact not found'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testDeleteSuccess(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->delete("api/contacts/$contact->id", [], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => true
+            ]);
+    }
+
+    public function testDeleteNotFound(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->delete("api/contacts/" . ($contact->id + 1), [], [
+            'Authorization' => 'test'
         ])->assertStatus(404)
             ->assertJson([
                 'errors' => [
