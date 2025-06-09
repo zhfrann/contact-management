@@ -6,6 +6,7 @@ use App\Http\Requests\AddressCreateRequest;
 use App\Http\Resources\AddressResource;
 use App\Models\Address;
 use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,10 +14,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AddressController extends Controller
 {
-    public function create(int $idContact, AddressCreateRequest $requets): JsonResponse
+    private function getContact(User $user, int $idContact): Contact | HttpResponseException
     {
-        $user = Auth::user();
-
         $contact = Contact::query()->where('user_id', '=', $user->id)->where('id', '=', $idContact)->first();
         if (!$contact) {
             throw new HttpResponseException(
@@ -29,6 +28,33 @@ class AddressController extends Controller
                 ], 404)
             );
         }
+
+        return $contact;
+    }
+
+    private function getAddress(Contact $contact, int $idAddress): Address | HttpResponseException
+    {
+        $address = Address::query()->where('id', '=', $idAddress)->where('contact_id', '=', $contact->id)->first();
+        if (!$address) {
+            throw new HttpResponseException(
+                response()->json([
+                    'errors' => [
+                        'message' => [
+                            'Address not found'
+                        ]
+                    ]
+                ], 404)
+            );
+        }
+
+        return $address;
+    }
+
+    public function create(int $idContact, AddressCreateRequest $requets): JsonResponse
+    {
+        $user = Auth::user();
+
+        $contact = $this->getContact($user, $idContact);
 
         $data = $requets->validated();
 
@@ -47,31 +73,8 @@ class AddressController extends Controller
     {
         $user = Auth::user();
 
-        $contact = Contact::query()->where('user_id', '=', $user->id)->where('id', '=', $idContact)->first();
-        if (!$contact) {
-            throw new HttpResponseException(
-                response()->json([
-                    'errors' => [
-                        'message' => [
-                            'Contact not found'
-                        ]
-                    ]
-                ], 404)
-            );
-        }
-
-        $address = Address::query()->where('id', '=', $idAddress)->where('contact_id', '=', $contact->id)->first();
-        if (!$address) {
-            throw new HttpResponseException(
-                response()->json([
-                    'errors' => [
-                        'message' => [
-                            'Address not found'
-                        ]
-                    ]
-                ], 404)
-            );
-        }
+        $contact = $this->getContact($user, $idContact);
+        $address = $this->getAddress($contact, $idAddress);
 
         return new AddressResource($address);
     }
