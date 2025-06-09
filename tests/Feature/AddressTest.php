@@ -136,4 +136,75 @@ class AddressTest extends TestCase
                 ]
             ]);
     }
+
+    public function testUpdateSuccess(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->put("/api/contacts/$address->contact_id/addresses/$address->id", [
+            'street' => 'Update new street',
+            'city' => 'Update new City',
+            // 'province' => 'test',
+            'country' => 'Update new country',
+            'postal_code' => '33333',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'street' => 'Update new street',
+                    'city' => 'Update new City',
+                    'province' => "test",
+                    'country' => 'Update new country',
+                    'postal_code' => '33333',
+                ]
+            ]);
+    }
+
+    public function testUpdateFailed(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->put("/api/contacts/$address->contact_id/addresses/$address->id", [
+            'street' => 'Update new street',
+            'city' => 'Update new City',
+            // 'province' => 'test',
+            // 'country' => 'Update new country',
+            'postal_code' => '33333',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'country' => [
+                        'The country field is required.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdateNotFound(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->put("/api/contacts/$address->contact_id/addresses/" . ($address->id + 1), [
+            'street' => 'Update new street',
+            'city' => 'Update new City',
+            // 'province' => 'test',
+            'country' => 'Update new country',
+            'postal_code' => '33333',
+        ], [
+            'Authorization' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Address not found'
+                    ]
+                ]
+            ]);
+    }
 }
