@@ -50,6 +50,8 @@ Start the server
 
 ### Auth
 
+You can try these endpoints using test.http
+
 | Method | Endpoint           | Description       |
 | ------ | ------------------ | ----------------- |
 | POST   | /api/users         | Register new user |
