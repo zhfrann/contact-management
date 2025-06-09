@@ -1,0 +1,166 @@
+### Register new user API
+POST http://localhost:8000/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "zhfrann",
+    "password": "my-secret-password",
+    "name": "Muhammad Zhafran"
+}
+
+### Login User API
+POST http://localhost:8000/api/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "zhfrann",
+    "password": "my-secret-password"
+}
+
+### Get Current User API
+GET http://localhost:8000/api/users/current
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Update Current User API
+PATCH  http://localhost:8000/api/users/current
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+    "name": "My new name"
+}
+
+### Logout Current User API
+DELETE  http://localhost:8000/api/users/logout
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Create Contact API
+POST http://localhost:8000/api/contacts
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "johndoe@gmail.com",
+    "phone": "+6281122223333"
+}
+
+### Get Contact API
+GET http://localhost:8000/api/contacts/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Update Contact API
+PUT http://localhost:8000/api/contacts/1
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+    "first_name": "John new name",
+    "last_name": "Doe",
+    "email": "johndoe@gmail.com",
+    "phone": "+6285555555"
+}
+
+### Delete Contact API
+DELETE http://localhost:8000/api/contacts/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Search Contact API
+GET http://localhost:8000/api/contacts
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Search Contact API with name
+GET http://localhost:8000/api/contacts?name=john
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Search Contact API with pagination
+GET http://localhost:8000/api/contacts?size=2
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Create Address API
+POST http://localhost:8000/api/contacts/2/addresses/
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+    "street": "Street 1",
+    "city": "",
+    "province": "Province 1",
+    "country": "Country 1",
+    "postal_code": "11111"
+}
+
+### Get Address API
+GET http://localhost:8000/api/contacts/2/addresses/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### Update Address API
+PUT http://localhost:8000/api/contacts/2/addresses/2
+Content-Type: application/json
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+    "street": "New Street 2",
+    "city": "New city",
+    "province": "New Province 2",
+    "country": "Country 2",
+    "postal_code": "33333"
+}
+
+### Remove Address API
+DELETE http://localhost:8000/api/contacts/2/addresses/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
+
+### List Address API
+GET http://localhost:8000/api/contacts/2/addresses/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
