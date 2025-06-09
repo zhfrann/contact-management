@@ -142,11 +142,25 @@ Accept: application/json
 Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
 
 {
-    "street": "",
-    "city": "",
-    "province": "",
+    "street": "New Street 2",
+    "city": "New city",
+    "province": "New Province 2",
     "country": "Country 2",
     "postal_code": "33333"
 }
 
+### Remove Address API
+DELETE http://localhost:8000/api/contacts/2/addresses/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
 
+{
+}
+
+### List Address API
+GET http://localhost:8000/api/contacts/2/addresses/1
+Accept: application/json
+Authorization: a2ea1609-294b-4df1-9c46-03b1ba2f0f85
+
+{
+}
