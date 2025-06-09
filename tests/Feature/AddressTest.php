@@ -198,7 +198,36 @@ class AddressTest extends TestCase
             'postal_code' => '33333',
         ], [
             'Authorization' => 'test'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Address not found'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testDeleteSuccess(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->delete("/api/contacts/$address->contact_id/addresses/$address->id", [], [
+            'Authorization' => 'test'
         ])->assertStatus(200)
+            ->assertJson([
+                'data' => true
+            ]);
+    }
+    public function testDeleteNotFound(): void
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->delete("/api/contacts/$address->contact_id/addresses/" . ($address->id + 1), [], [
+            'Authorization' => 'test'
+        ])->assertStatus(404)
             ->assertJson([
                 'errors' => [
                     'message' => [
